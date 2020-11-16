@@ -1,4 +1,4 @@
-package com.example.snowtam.Model;
+package com.ensim.snowtam.Model;
 
 public class RealtimeNotam {
     private String Condition;

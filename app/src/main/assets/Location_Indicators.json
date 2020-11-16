@@ -1,0 +1,16 @@
+[
+  {
+    "Terr_code": "EN",
+    "State_Name": "NORWAY",
+    "ICAO_Code": "ENGM",
+    "AFTN": "",
+    "Location_Name": "OSLO/GARDERMOEN",
+    "Lat": "60:12:1000N",
+    "Long": "011:05:0200E",
+    "Latitude": 60.20277777777778,
+    "Longitude": 11.08388888888889,
+    "codcoun": "ENNorwa",
+    "IATA_Code": "OSL",
+    "ctry_code": "NOR"
+  }
+]
