@@ -1,24 +1,31 @@
 package com.ensim.snowtam.Model;
 
 import android.content.res.AssetManager;
+import android.util.Log;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 public final class Model {
 
     private final String url = "https://applications.icao.int/dataservices/api/";
     private final String api_key = "?api_key=key";
-    private final String format_arg = "&format=";
+    private final String format_arg = "&format=json";
 
     private final String rt_notams = "notams-realtime-list";
     private final String loc_ind = "doc7910";
 
     private final String airports_arg = "&airports=";
-    private final String criticality_arg = "&criticality=";
+    private final String criticality_arg = "&criticality=1";
     private final String locations_arg = "&locations=";
 
     private final AssetManager am;
@@ -31,29 +38,21 @@ public final class Model {
      * Returns a JSON Array containing Realtime Notams
      * @return
      */
-    public JSONArray getRealtimeNotams() {
-        JSONArray jsonArray = new JSONArray();
+    public JSONArray getRealtimeNotams(String loc) {
+        // Local loading
+        JSONArray jsonArray = loadJSONFromAsset("UUEE.json");
 
-        // Load the JSON file
+        // API loading
+        /*if( jsonArray == null ) {
+            // Call the API
+            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url + api_key + format_arg + criticality_arg + locations_arg + loc,
+                    response -> Log.w("Notam_Response", response.toString()),
+                    error -> Log.w("Notam_Error", error.getMessage()));
+        }*/
 
-        // Get the JSON Array
+
 
         return jsonArray;
-    }
-
-    /**
-     * Returns a JSON Object containing the given notam id
-     * @param id
-     * @return
-     */
-    public JSONObject getNotamById(String id) {
-        JSONObject jsonObject = new JSONObject();
-
-        // Get the array
-
-        // Get the corrresponding notam id if exists
-
-        return jsonObject;
     }
 
     /**
@@ -61,15 +60,24 @@ public final class Model {
      * @return
      */
     public LocationIndicator getLocationIndicator() {
+        // Local loading
         JSONArray jsonArray = loadJSONFromAsset("Location_Indicators.json");
-        JSONObject jsonObject = null;
+
+        // API loading
+        /*if( jsonArray == null ) {
+            // Call the API
+            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url + api_key + airports_arg + format_arg,
+                    response -> Log.w("Location_Ind_Response", response.toString()),
+                    error -> Log.w("Location_Ind_Error", error.getMessage()));
+        }*/
+
         LocationIndicator loc = null;
 
         try {
-            jsonObject = (JSONObject) jsonArray.get(0);
+            JSONObject jsonObject = (JSONObject) jsonArray.get(0);
             loc = createLocationIndicatorFromJSON(jsonObject);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.w("JSON_Loc_Ind_Err", e.getMessage());
         }
 
         return loc;
@@ -97,7 +105,7 @@ public final class Model {
             loc.setIATACode(jsonObject.getString("IATA_Code"));
             loc.setCtryCode(jsonObject.getString("ctry_code"));
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.w("Create_Loc_Ind_Err", e.getMessage());
         }
 
         return loc;
@@ -119,6 +127,8 @@ public final class Model {
             is.close();
             String json = new String(buffer, "UTF-8");
             jsonArray = new JSONArray(json);
+        } catch (FileNotFoundException e) {
+            Log.w("JSON_Not_Found", e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }

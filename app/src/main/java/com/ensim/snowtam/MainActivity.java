@@ -8,17 +8,18 @@ import android.view.View;
 import android.widget.Button;
 
 import com.ensim.snowtam.Controller.Controller;
+import com.ensim.snowtam.View.HomePageActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Controller controller;
+
     private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        controller = new Controller(getAssets());
+
         //Fait disparaître la barre d'action
         getSupportActionBar().hide();
         
