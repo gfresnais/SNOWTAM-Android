@@ -3,6 +3,7 @@ package com.ensim.snowtam.Model;
 import android.content.res.AssetManager;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
@@ -56,20 +57,59 @@ public final class Model {
     }
 
     /**
-     * Returns a JSON Object containing Location Indicator
+     * Returns a LocationIndicator object
      * @return
      */
-    public JSONObject getLocationIndicator() {
-        JSONObject jsonObject = loadJSONFromAsset("Location_Indicators.json");
-        System.out.println(jsonObject.toString());
+    public LocationIndicator getLocationIndicator() {
+        JSONArray jsonArray = loadJSONFromAsset("Location_Indicators.json");
+        JSONObject jsonObject = null;
+        LocationIndicator loc = null;
 
+        try {
+            jsonObject = (JSONObject) jsonArray.get(0);
+            loc = createLocationIndicatorFromJSON(jsonObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-
-        return jsonObject;
+        return loc;
     }
 
-    private JSONObject loadJSONFromAsset(String filename) {
-        JSONObject jsonObject = null;
+    /**
+     * Creates a LocationIndicator object from a JSON Object
+     * @param jsonObject
+     * @return
+     */
+    private LocationIndicator createLocationIndicatorFromJSON(JSONObject jsonObject) {
+        LocationIndicator loc = new LocationIndicator();
+
+        try {
+            loc.setTerrCode(jsonObject.getString("Terr_code"));
+            loc.setStateName(jsonObject.getString("State_Name"));
+            loc.setICAOCode(jsonObject.getString("ICAO_Code"));
+            loc.setAFTN(jsonObject.getString("AFTN"));
+            loc.setLocationName(jsonObject.getString("Location_Name"));
+            loc.setLat(jsonObject.getString("Lat"));
+            loc.setLong(jsonObject.getString("Long"));
+            loc.setLatitude((Double) jsonObject.get("Latitude"));
+            loc.setLongitude((Double) jsonObject.get("Longitude"));
+            loc.setCodcoun(jsonObject.getString("codcoun"));
+            loc.setIATACode(jsonObject.getString("IATA_Code"));
+            loc.setCtryCode(jsonObject.getString("ctry_code"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return loc;
+    }
+
+    /**
+     * Loads a JSON files from the assets folder and returns a JSON Array
+     * @param filename
+     * @return
+     */
+    private JSONArray loadJSONFromAsset(String filename) {
+        JSONArray jsonArray = null;
 
         try {
             InputStream is = am.open(filename);
@@ -78,12 +118,11 @@ public final class Model {
             is.read(buffer);
             is.close();
             String json = new String(buffer, "UTF-8");
-            JSONArray jsonArray = new JSONArray(json);
-            jsonObject = jsonArray.getJSONObject(0);
+            jsonArray = new JSONArray(json);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return jsonObject;
+        return jsonArray;
     }
 }

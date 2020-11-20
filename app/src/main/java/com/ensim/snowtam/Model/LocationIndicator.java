@@ -1,5 +1,9 @@
 package com.ensim.snowtam.Model;
 
+/**
+ * Object structure of a LocationIndicator
+ * Used in JSON files from the ICAO API
+ */
 public class LocationIndicator {
 
     private String terrCode;
@@ -109,5 +113,10 @@ public class LocationIndicator {
 
     public void setCtryCode(String ctryCode) {
         this.ctryCode = ctryCode;
+    }
+
+    @Override
+    public String toString() {
+        return "LocationIndicator [terrCode = " + terrCode + ", stateName = " + stateName + ", ICAOCode = " + iCAOCode + ", AFTN = " + aFTN + ", LocationName = " + locationName + ", lat = " + lat + ", long = " + _long + ", latitude = " + latitude + ", longitude = " + longitude + ", codcoun = " + codcoun + ", iATACode = " + iATACode + ", ctryCode = " + ctryCode + "]";
     }
 }

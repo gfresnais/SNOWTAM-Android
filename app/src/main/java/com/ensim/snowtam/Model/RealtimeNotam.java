@@ -1,5 +1,9 @@
 package com.ensim.snowtam.Model;
 
+/**
+ * Object structure of a RealtimeNotam
+ * Used in JSON files from the ICAO API
+ */
 public class RealtimeNotam {
     private String Condition;
     private String all;

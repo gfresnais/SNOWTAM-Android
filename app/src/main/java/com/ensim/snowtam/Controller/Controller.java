@@ -2,6 +2,7 @@ package com.ensim.snowtam.Controller;
 
 import android.content.res.AssetManager;
 
+import com.ensim.snowtam.Model.LocationIndicator;
 import com.ensim.snowtam.Model.Model;
 
 public class Controller  {
@@ -9,6 +10,21 @@ public class Controller  {
 
     public Controller(AssetManager am) {
         model = new Model(am);
-        model.getLocationIndicator();
+    }
+
+    /**
+     * Returns the latitude
+     * @return
+     */
+    public Double getLatitude() {
+        return model.getLocationIndicator().getLatitude();
+    }
+
+    /**
+     * Returns the longitude
+     * @return
+     */
+    public Double getLongitude() {
+        return model.getLocationIndicator().getLongitude();
     }
 }
