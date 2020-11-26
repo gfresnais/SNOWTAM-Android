@@ -18,6 +18,8 @@ import com.ensim.snowtam.R;
 import com.ensim.snowtam.View.ui.main.SectionsPagerAdapter;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class ResultsActivity extends AppCompatActivity {
@@ -39,6 +41,11 @@ public class ResultsActivity extends AppCompatActivity {
         airfields.add((String) intent.getSerializableExtra("airfield3"));
         airfields.add((String) intent.getSerializableExtra("airfield4"));
 
+        // Prevents null objects from being in the list
+        airfields.removeAll(Collections.singleton(null));
+        // Prevents empty String from being in the list
+        airfields.removeAll(Collections.singleton(""));
+
 
         // Tabbed Activity
         // Sections
@@ -53,5 +60,7 @@ public class ResultsActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
 
         controller = new Controller(getAssets());
+
+        controller.testRealtimeNotam();
     }
 }

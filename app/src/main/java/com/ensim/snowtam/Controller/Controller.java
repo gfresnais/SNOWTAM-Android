@@ -27,4 +27,8 @@ public class Controller  {
     public Double getLongitude() {
         return model.getLocationIndicator().getLongitude();
     }
+
+    public void testRealtimeNotam() {
+        System.out.println(model.getRealtimeNotam("UUEE").toString());
+    }
 }

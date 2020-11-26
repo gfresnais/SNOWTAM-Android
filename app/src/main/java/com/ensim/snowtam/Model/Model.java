@@ -1,6 +1,7 @@
 package com.ensim.snowtam.Model;
 
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -34,13 +35,15 @@ public final class Model {
         this.am = am;
     }
 
+
     /**
-     * Returns a JSON Array containing Realtime Notams
+     * Returns a RealtimeNotam object
+     * @param loc
      * @return
      */
-    public JSONArray getRealtimeNotams(String loc) {
+    public RealtimeNotam getRealtimeNotam(String loc) {
         // Local loading
-        JSONArray jsonArray = loadJSONFromAsset("UUEE.json");
+        JSONArray jsonArray = loadJSONFromAsset(loc + ".json"); // UUEE.json
 
         // API loading
         /*if( jsonArray == null ) {
@@ -50,9 +53,68 @@ public final class Model {
                     error -> Log.w("Notam_Error", error.getMessage()));
         }*/
 
+        int index = -1;
+        RealtimeNotam rtn = null;
+
+        try {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                if( jsonObject.getString("all").contains("SNOWTAM") ) {
+                    index = i;
+                    break;
+                }
+            }
+
+            // Found a SNOWTAM
+            if( index != -1 ) {
+                rtn = createRealtimeNotam((JSONObject) jsonArray.get(index));
+            } else throw new Resources.NotFoundException();
+
+        } catch (JSONException e) {
+            Log.w("JSON_Notam_Err", e.getMessage());
+        } catch (Resources.NotFoundException e) {
+            Log.w("JSON_Notam_Not_Found", e.getMessage());
+        }
 
 
-        return jsonArray;
+        return rtn;
+    }
+
+    /**
+     * Creates a RealtimeNotam object from a JSON object
+     * @param jsonObject
+     * @return
+     */
+    private RealtimeNotam createRealtimeNotam(JSONObject jsonObject) {
+        RealtimeNotam rtn = new RealtimeNotam();
+
+        try {
+            rtn.setId(jsonObject.getString("id"));
+            rtn.setEntity(jsonObject.getString("entity"));
+            rtn.setStatus(jsonObject.getString("status"));
+            rtn.setQcode(jsonObject.getString("Qcode"));
+            rtn.setArea(jsonObject.getString("Area"));
+            rtn.setSubArea(jsonObject.getString("SubArea"));
+            rtn.setCondition(jsonObject.getString("Condition"));
+            rtn.setSubject(jsonObject.getString("Subject"));
+            rtn.setModifier(jsonObject.getString("Modifier"));
+            rtn.setMessage(jsonObject.getString("message"));
+            rtn.setStartdate(jsonObject.getString("startdate"));
+            rtn.setEnddate(jsonObject.getString("enddate"));
+            rtn.setAll(jsonObject.getString("all"));
+            rtn.setLocation(jsonObject.getString("location"));
+            rtn.setIsICAO(jsonObject.getString("isICAO"));
+            rtn.setCreated(jsonObject.getString("Created"));
+            rtn.setKey(jsonObject.getString("key"));
+            rtn.setType(jsonObject.getString("type"));
+            rtn.setStateCode(jsonObject.getString("StateCode"));
+            rtn.setStateName(jsonObject.getString("StateName"));
+            rtn.setCriticality(jsonObject.getString("criticality"));
+        } catch (JSONException e) {
+            Log.w("Create_Rtn_Err", e.getMessage());
+        }
+
+        return  rtn;
     }
 
     /**
