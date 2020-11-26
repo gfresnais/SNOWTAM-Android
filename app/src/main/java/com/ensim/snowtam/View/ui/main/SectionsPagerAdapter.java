@@ -8,7 +8,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.ensim.snowtam.Model.RealtimeNotam;
 import com.ensim.snowtam.R;
+import com.ensim.snowtam.View.fragment.ItemFragment;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -20,17 +24,20 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     private final List<String> TAB_TITLES;
 
-    public SectionsPagerAdapter(FragmentManager fm, List<String> airfields) {
+    private final List<RealtimeNotam> mRtn_list;
+
+    public SectionsPagerAdapter(FragmentManager fm, List<String> airfields, List<RealtimeNotam> rtn_list) {
         super(fm);
 
         TAB_TITLES = airfields;
+        mRtn_list = rtn_list;
     }
 
+    @NotNull
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
-        // Return a PlaceholderFragment (defined as a static inner class below).
-        return PlaceholderFragment.newInstance(position + 1);
+        return ItemFragment.newInstance(mRtn_list.get(position));
     }
 
     @Nullable

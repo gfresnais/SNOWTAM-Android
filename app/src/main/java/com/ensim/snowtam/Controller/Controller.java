@@ -1,34 +1,65 @@
 package com.ensim.snowtam.Controller;
 
+import android.content.Context;
 import android.content.res.AssetManager;
+import android.widget.Toast;
 
 import com.ensim.snowtam.Model.LocationIndicator;
 import com.ensim.snowtam.Model.Model;
+import com.ensim.snowtam.Model.RealtimeNotam;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Controller  {
-    private Model model;
+    private final Model model;
 
-    public Controller(AssetManager am) {
+    private final Context context;
+
+    public Controller(AssetManager am, Context context) {
         model = new Model(am);
+        this.context = context;
     }
 
     /**
-     * Returns the latitude
+     * Returns a LocationIndicator Object
+     * @param location
      * @return
      */
-    public Double getLatitude() {
-        return model.getLocationIndicator().getLatitude();
+    public LocationIndicator getLocationIndicator(String location) {
+        return model.getLocationIndicator(location);
     }
 
     /**
-     * Returns the longitude
+     * Returns the latitude of a given location (ICAO code)
+     * @param location
      * @return
      */
-    public Double getLongitude() {
-        return model.getLocationIndicator().getLongitude();
+    public Double getLatitude(String location) {
+        return model.getLocationIndicator(location).getLatitude();
     }
 
-    public void testRealtimeNotam() {
-        System.out.println(model.getRealtimeNotam("UUEE").toString());
+    /**
+     * Returns the longitude of a given location (ICAO Code)
+     * @param location
+     * @return
+     */
+    public Double getLongitude(String location) {
+        return model.getLocationIndicator(location).getLongitude();
+    }
+
+
+    /**
+     * Returns a list of RealtimeNotam from a list of airfields (String)
+     * @param airfields
+     * @return
+     */
+    public List<RealtimeNotam> getRealtimeNotams(List<String> airfields) {
+        List<RealtimeNotam> rtn_list = new ArrayList<>();
+        for (String location:
+             airfields) {
+            rtn_list.add(model.getRealtimeNotam(location));
+        }
+        return rtn_list;
     }
 }

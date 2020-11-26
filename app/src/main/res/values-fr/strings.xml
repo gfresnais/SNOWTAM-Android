@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">SNOWTAM</string>
     <string name="btnSearch">Rechercher</string>
-    <string name="editAirfield">Aérodrome</string>
+    <string name="editAirfield">Code Aérodrome (ICAO)</string>
     <string name="title_activity_results">Résultats</string>
+    <string name="error_empty_fields">Vous devez rechercher au moins 1 aéroport</string>
+    <string name="no_snowtam">Pas de SNOWTAM trouvé</string>
 </resources>

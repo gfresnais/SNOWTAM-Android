@@ -15,6 +15,8 @@ import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public final class Model {
 
@@ -57,23 +59,23 @@ public final class Model {
         RealtimeNotam rtn = null;
 
         try {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                if( jsonObject.getString("all").contains("SNOWTAM") ) {
-                    index = i;
-                    break;
+            if( jsonArray != null ) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                    if( jsonObject.getString("all").contains("SNOWTAM") ) {
+                        index = i;
+                        break;
+                    }
                 }
+                // Found a SNOWTAM
+                if( index != -1 ) {
+                    rtn = createRealtimeNotam((JSONObject) jsonArray.get(index));
+                } else throw new Resources.NotFoundException();
             }
-
-            // Found a SNOWTAM
-            if( index != -1 ) {
-                rtn = createRealtimeNotam((JSONObject) jsonArray.get(index));
-            } else throw new Resources.NotFoundException();
-
         } catch (JSONException e) {
-            Log.w("JSON_Notam_Err", e.getMessage());
+            Log.w("JSON_Notam_Err", Objects.requireNonNull(e.getMessage()));
         } catch (Resources.NotFoundException e) {
-            Log.w("JSON_Notam_Not_Found", e.getMessage());
+            Log.w("JSON_Notam_Not_Found", "The .json was not found");
         }
 
 
@@ -111,7 +113,7 @@ public final class Model {
             rtn.setStateName(jsonObject.getString("StateName"));
             rtn.setCriticality(jsonObject.getString("criticality"));
         } catch (JSONException e) {
-            Log.w("Create_Rtn_Err", e.getMessage());
+            Log.w("Create_Rtn_Err", Objects.requireNonNull(e.getMessage()));
         }
 
         return  rtn;
@@ -121,9 +123,9 @@ public final class Model {
      * Returns a LocationIndicator object
      * @return
      */
-    public LocationIndicator getLocationIndicator() {
+    public LocationIndicator getLocationIndicator(String location) {
         // Local loading
-        JSONArray jsonArray = loadJSONFromAsset("Location_Indicators.json");
+        JSONArray jsonArray = loadJSONFromAsset(location + ".json");
 
         // API loading
         /*if( jsonArray == null ) {
@@ -136,10 +138,12 @@ public final class Model {
         LocationIndicator loc = null;
 
         try {
-            JSONObject jsonObject = (JSONObject) jsonArray.get(0);
-            loc = createLocationIndicatorFromJSON(jsonObject);
+            if( jsonArray != null ) {
+                JSONObject jsonObject = (JSONObject) jsonArray.get(0);
+                loc = createLocationIndicatorFromJSON(jsonObject);
+            }
         } catch (JSONException e) {
-            Log.w("JSON_Loc_Ind_Err", e.getMessage());
+            Log.w("JSON_Loc_Ind_Err", Objects.requireNonNull(e.getMessage()));
         }
 
         return loc;
@@ -167,7 +171,7 @@ public final class Model {
             loc.setIATACode(jsonObject.getString("IATA_Code"));
             loc.setCtryCode(jsonObject.getString("ctry_code"));
         } catch (JSONException e) {
-            Log.w("Create_Loc_Ind_Err", e.getMessage());
+            Log.w("Create_Loc_Ind_Err", Objects.requireNonNull(e.getMessage()));
         }
 
         return loc;
@@ -187,10 +191,10 @@ public final class Model {
             byte[] buffer = new byte[size];
             is.read(buffer);
             is.close();
-            String json = new String(buffer, "UTF-8");
+            String json = new String(buffer, StandardCharsets.UTF_8);
             jsonArray = new JSONArray(json);
         } catch (FileNotFoundException e) {
-            Log.w("JSON_Not_Found", e.getMessage());
+            Log.w("JSON_Not_Found", Objects.requireNonNull(e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
         }

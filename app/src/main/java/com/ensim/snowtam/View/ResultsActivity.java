@@ -9,33 +9,27 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-
 import com.ensim.snowtam.R;
 
 import com.ensim.snowtam.View.ui.main.SectionsPagerAdapter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 public class ResultsActivity extends AppCompatActivity {
-
-    private Controller controller;
-
-    private List<String> airfields;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 
+        // Initialize the controller
+        Controller controller = new Controller(getAssets(), this);
+
         // Get the search airfields
         Intent intent = getIntent();
-        airfields = new ArrayList<>();
+        List<String> airfields = new ArrayList<>();
         airfields.add((String) intent.getSerializableExtra("airfield1"));
         airfields.add((String) intent.getSerializableExtra("airfield2"));
         airfields.add((String) intent.getSerializableExtra("airfield3"));
@@ -46,10 +40,9 @@ public class ResultsActivity extends AppCompatActivity {
         // Prevents empty String from being in the list
         airfields.removeAll(Collections.singleton(""));
 
-
         // Tabbed Activity
         // Sections
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), airfields);
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), airfields, controller.getRealtimeNotams(airfields));
 
         // Pager view
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -58,9 +51,5 @@ public class ResultsActivity extends AppCompatActivity {
         // Tab Layout
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-
-        controller = new Controller(getAssets());
-
-        controller.testRealtimeNotam();
     }
 }
