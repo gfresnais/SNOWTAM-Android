@@ -1,13 +1,16 @@
 package com.ensim.snowtam.Model;
 
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.util.Log;
 
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,12 +19,16 @@ import org.json.JSONObject;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public final class Model {
 
     private final String url = "https://applications.icao.int/dataservices/api/";
-    private final String api_key = "?api_key=key";
+    private final String api_key = "?api_key=29bfe5a0-259c-11eb-8d6d-d3711efdc6b7";
     private final String format_arg = "&format=json";
 
     private final String rt_notams = "notams-realtime-list";
@@ -32,44 +39,71 @@ public final class Model {
     private final String locations_arg = "&locations=";
 
     private final AssetManager am;
+    private final Context context;
 
-    public Model(AssetManager am) {
+    private Map<String, RealtimeNotam> rtn_map;
+
+    public Model(AssetManager am, Context context) {
         this.am = am;
+        this.context = context;
+        rtn_map = new HashMap<>();
     }
 
 
+    /* GETTERS */
+    public RealtimeNotam getRealtimeNotam(String location) {
+        return rtn_map.get(location);
+    }
+
     /**
-     * Returns a RealtimeNotam object
+     * Gets a local JSON file for a RealtimeNotam
+     * For tests purposes only
      * @param loc
-     * @return
      */
-    public RealtimeNotam getRealtimeNotam(String loc) {
-        // Local loading
+    public void localRealtimeNotam(String loc) {
         JSONArray jsonArray = loadJSONFromAsset(loc + ".json"); // UUEE.json
+        parseRealtimeNotam(loc, jsonArray);
+    }
 
-        // API loading
-        /*if( jsonArray == null ) {
-            // Call the API
-            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url + api_key + format_arg + criticality_arg + locations_arg + loc,
-                    response -> Log.w("Notam_Response", response.toString()),
-                    error -> Log.w("Notam_Error", error.getMessage()));
-        }*/
+    /**
+     * Requests a RealtimeNotam using the ICAO API
+     * @param loc
+     */
+    public void requestRealtimeNotam(String loc) {
+        // Call the API
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url + rt_notams + api_key + format_arg + criticality_arg + locations_arg + loc,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.w("Notam_Response", "Length : "+response.length());
+                        parseRealtimeNotam(loc, response);
+                    }
+                },
+                error -> Log.w("Notam_Error", "Time : " + error.getNetworkTimeMs()));
 
+        SingletonRequestQueue.getInstance(context).addToRequestQueue(jsonArrayRequest);
+    }
+
+    /**
+     * Parses a RealtimeNotam in an array
+     * @param location
+     * @param jsonArray
+     */
+    private void parseRealtimeNotam(String location, JSONArray jsonArray) {
         int index = -1;
-        RealtimeNotam rtn = null;
 
         try {
             if( jsonArray != null ) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                    if( jsonObject.getString("all").contains("SNOWTAM") ) {
+                    if( jsonObject.getString("id").contains("SW") ) {
                         index = i;
                         break;
                     }
                 }
                 // Found a SNOWTAM
                 if( index != -1 ) {
-                    rtn = createRealtimeNotam((JSONObject) jsonArray.get(index));
+                    rtn_map.putIfAbsent(location, createRealtimeNotam((JSONObject) jsonArray.get(index)));
                 } else throw new Resources.NotFoundException();
             }
         } catch (JSONException e) {
@@ -77,10 +111,8 @@ public final class Model {
         } catch (Resources.NotFoundException e) {
             Log.w("JSON_Notam_Not_Found", "The .json was not found");
         }
-
-
-        return rtn;
     }
+
 
     /**
      * Creates a RealtimeNotam object from a JSON object
@@ -89,7 +121,6 @@ public final class Model {
      */
     private RealtimeNotam createRealtimeNotam(JSONObject jsonObject) {
         RealtimeNotam rtn = new RealtimeNotam();
-
         try {
             rtn.setId(jsonObject.getString("id"));
             rtn.setEntity(jsonObject.getString("entity"));

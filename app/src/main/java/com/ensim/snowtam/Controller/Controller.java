@@ -17,7 +17,7 @@ public class Controller  {
     private final Context context;
 
     public Controller(AssetManager am, Context context) {
-        model = new Model(am);
+        model = new Model(am, context);
         this.context = context;
     }
 
@@ -48,6 +48,17 @@ public class Controller  {
         return model.getLocationIndicator(location).getLongitude();
     }
 
+
+    /**
+     * Orders requests from an airfield list
+     * @param airfields
+     */
+    public void sendRealtimeNotamRequest(List<String> airfields) {
+        for (String location:
+                airfields) {
+            model.requestRealtimeNotam(location);
+        }
+    }
 
     /**
      * Returns a list of RealtimeNotam from a list of airfields (String)
