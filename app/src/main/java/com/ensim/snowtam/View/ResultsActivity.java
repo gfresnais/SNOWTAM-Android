@@ -8,8 +8,10 @@ import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.ensim.snowtam.Controller.Controller;
+import com.ensim.snowtam.View.fragment.GMaps_Fragment;
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.fragment.app.FragmentManager;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,10 +26,13 @@ import java.util.List;
 
 public class ResultsActivity extends AppCompatActivity {
 
+    private GMaps_Fragment gMaps_fragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
+
 
         // Initialize the controller
         Controller controller = new Controller(getAssets(), this);
@@ -47,8 +52,8 @@ public class ResultsActivity extends AppCompatActivity {
         // Sets all to uppercase
         airfields.replaceAll(String::toUpperCase);
 
-        // Sends the request first
         controller.sendRealtimeNotamRequest(airfields);
+        // Sends the request first
 
         // Creates a progressDialog to make the user wait
         ProgressDialog progressDialog = new ProgressDialog(this);
@@ -57,6 +62,7 @@ public class ResultsActivity extends AppCompatActivity {
         progressDialog.setIndeterminate(true);
         progressDialog.setProgress(0);
         progressDialog.show();
+      
 
         // Handler to create a loading screen and wait for the request to be fully done
         Handler handler = new Handler();
@@ -77,6 +83,12 @@ public class ResultsActivity extends AppCompatActivity {
                 // Tab Layout
                 TabLayout tabs = findViewById(R.id.tabs);
                 tabs.setupWithViewPager(viewPager);
+                
+                // G_Map
+                FragmentManager fragmentManager = this.getSupportFragmentManager();
+                this.gMaps_fragment = (GMaps_Fragment) fragmentManager.findFragmentById(R.id.map);
+                
+                
                 progressDialog.dismiss();
             }
         }, 3000);

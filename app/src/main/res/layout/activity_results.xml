@@ -16,15 +16,18 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@color/dark_ice_blue"
             app:tabSelectedTextColor="@color/white"
-            app:tabTextColor="@color/purple_200" />
+            app:tabTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/primary_ice_blue"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
