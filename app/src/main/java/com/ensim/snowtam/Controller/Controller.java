@@ -22,6 +22,17 @@ public class Controller  {
     }
 
     /**
+     * Orders LocationIndicator requests from an airfield list
+     * @param airfields
+     */
+    public void sendLocationIndicatorRequest(List<String> airfields) {
+        for (String location:
+                airfields) {
+            model.requestLocationIndicator(location);
+        }
+    }
+
+    /**
      * Returns a LocationIndicator Object
      * @param location
      * @return
@@ -50,7 +61,7 @@ public class Controller  {
 
 
     /**
-     * Orders requests from an airfield list
+     * Orders RealtimeNotam requests from an airfield list
      * @param airfields
      */
     public void sendRealtimeNotamRequest(List<String> airfields) {

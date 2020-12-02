@@ -42,11 +42,13 @@ public final class Model {
     private final Context context;
 
     private Map<String, RealtimeNotam> rtn_map;
+    private Map<String, LocationIndicator> loc_map;
 
     public Model(AssetManager am, Context context) {
         this.am = am;
         this.context = context;
         rtn_map = new HashMap<>();
+        loc_map = new HashMap<>();
     }
 
 
@@ -55,28 +57,34 @@ public final class Model {
         return rtn_map.get(location);
     }
 
+    public LocationIndicator getLocationIndicator(String location) { return loc_map.get(location); }
+
+    /******************/
+    /* REALTIME NOTAM */
+    /******************/
+
     /**
      * Gets a local JSON file for a RealtimeNotam
      * For tests purposes only
-     * @param loc
+     * @param location
      */
-    public void localRealtimeNotam(String loc) {
-        JSONArray jsonArray = loadJSONFromAsset(loc + ".json"); // UUEE.json
-        parseRealtimeNotam(loc, jsonArray);
+    public void localRealtimeNotam(String location) {
+        JSONArray jsonArray = loadJSONFromAsset(location + ".json"); // UUEE.json
+        parseRealtimeNotam(location, jsonArray);
     }
 
     /**
      * Requests a RealtimeNotam using the ICAO API
-     * @param loc
+     * @param location
      */
-    public void requestRealtimeNotam(String loc) {
+    public void requestRealtimeNotam(String location) {
         // Call the API
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url + rt_notams + api_key + format_arg + criticality_arg + locations_arg + loc,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.w("Notam_Response", "Length : "+response.length());
-                        parseRealtimeNotam(loc, response);
+                        parseRealtimeNotam(location, response);
                     }
                 },
                 error -> Log.w("Notam_Error", "Time : " + error.getNetworkTimeMs()));
@@ -150,34 +158,53 @@ public final class Model {
         return  rtn;
     }
 
+
+    /**********************/
+    /* LOCATION INDICATOR */
+    /**********************/
+
     /**
-     * Returns a LocationIndicator object
-     * @return
+     * Loads a local LocationIndicator from a JSON file
+     * @param location
      */
-    public LocationIndicator getLocationIndicator(String location) {
-        // Local loading
+    public void localLocationIndicator(String location) {
         JSONArray jsonArray = loadJSONFromAsset(location + ".json");
+        parseLocationIndicator(location, jsonArray);
+    }
 
-        // API loading
-        /*if( jsonArray == null ) {
-            // Call the API
-            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url + api_key + airports_arg + format_arg,
-                    response -> Log.w("Location_Ind_Response", response.toString()),
-                    error -> Log.w("Location_Ind_Error", error.getMessage()));
-        }*/
+    /**
+     * Requests a LocationIndicator
+     * @param location
+     */
+    public void requestLocationIndicator(String location) {
+        // Call the API
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url + loc_ind + api_key + airports_arg + location + format_arg,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.w("LocInd_Response", "Length : "+response.length());
+                        parseLocationIndicator(location, response);
+                    }
+                },
+                error -> Log.w("LocInd_Error", "Time : " + error.getNetworkTimeMs()));
 
-        LocationIndicator loc = null;
+        SingletonRequestQueue.getInstance(context).addToRequestQueue(jsonArrayRequest);
+    }
 
+    /**
+     * Parses a LocationIndicator
+     * @param location
+     * @param jsonArray
+     */
+    public void parseLocationIndicator(String location, JSONArray jsonArray) {
         try {
             if( jsonArray != null ) {
                 JSONObject jsonObject = (JSONObject) jsonArray.get(0);
-                loc = createLocationIndicatorFromJSON(jsonObject);
+                loc_map.putIfAbsent(location, createLocationIndicatorFromJSON(jsonObject));
             }
         } catch (JSONException e) {
             Log.w("JSON_Loc_Ind_Err", Objects.requireNonNull(e.getMessage()));
         }
-
-        return loc;
     }
 
     /**
