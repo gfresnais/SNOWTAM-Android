@@ -23,6 +23,11 @@ public class ResultsRecyclerViewAdapter extends RecyclerView.Adapter<ResultsRecy
     private final RealtimeNotam mValue;
     private final Context mContext;
 
+    /**
+     * Constructor
+     * @param item
+     * @param context
+     */
     public ResultsRecyclerViewAdapter(RealtimeNotam item, Context context) {
         mValue = item;
         mContext = context;
@@ -47,11 +52,18 @@ public class ResultsRecyclerViewAdapter extends RecyclerView.Adapter<ResultsRecy
         }
     }
 
+    /**
+     * Always returns 1
+     * @return
+     */
     @Override
     public int getItemCount() {
         return 1;
     }
 
+    /**
+     * fragment_results_item
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
@@ -62,9 +74,9 @@ public class ResultsRecyclerViewAdapter extends RecyclerView.Adapter<ResultsRecy
             super(view);
             mView = view;
             // Maybe for presentation purposes
-            mIdView = (TextView) view.findViewById(R.id.item_number);
+            mIdView = view.findViewById(R.id.item_number);
             // The content of the SNOWTAM messages
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mContentView = view.findViewById(R.id.content);
         }
 
         @Override

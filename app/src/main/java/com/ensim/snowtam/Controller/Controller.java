@@ -84,4 +84,19 @@ public class Controller  {
         }
         return rtn_list;
     }
+
+    /**
+     * Returns a list of RealtimeNotam from a list of airfields (String)
+     * @param airfields
+     * @return
+     */
+    public List<RealtimeNotam> getLocalRealtimeNotams(List<String> airfields) {
+        List<RealtimeNotam> rtn_list = new ArrayList<>();
+        for (String location:
+                airfields) {
+            model.localRealtimeNotam(location);
+            rtn_list.add(model.getRealtimeNotam(location));
+        }
+        return rtn_list;
+    }
 }

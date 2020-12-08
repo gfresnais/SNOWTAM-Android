@@ -79,15 +79,15 @@ public final class Model {
      */
     public void requestRealtimeNotam(String location) {
         // Call the API
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url + rt_notams + api_key + format_arg + criticality_arg + locations_arg + loc,
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url + rt_notams + api_key + format_arg + criticality_arg + locations_arg + location,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.w("Notam_Response", "Length : "+response.length());
+                        Log.i("Notam_Response", "Length : "+response.length());
                         parseRealtimeNotam(location, response);
                     }
                 },
-                error -> Log.w("Notam_Error", "Time : " + error.getNetworkTimeMs()));
+                error -> Log.e("Notam_Error", "Time : " + error.getNetworkTimeMs()));
 
         SingletonRequestQueue.getInstance(context).addToRequestQueue(jsonArrayRequest);
     }
@@ -115,9 +115,9 @@ public final class Model {
                 } else throw new Resources.NotFoundException();
             }
         } catch (JSONException e) {
-            Log.w("JSON_Notam_Err", Objects.requireNonNull(e.getMessage()));
+            Log.e("JSON_Notam_Err", Objects.requireNonNull(e.getMessage()));
         } catch (Resources.NotFoundException e) {
-            Log.w("JSON_Notam_Not_Found", "The .json was not found");
+            Log.e("JSON_Notam_Not_Found", "The .json was not found");
         }
     }
 
@@ -152,7 +152,7 @@ public final class Model {
             rtn.setStateName(jsonObject.getString("StateName"));
             rtn.setCriticality(jsonObject.getString("criticality"));
         } catch (JSONException e) {
-            Log.w("Create_Rtn_Err", Objects.requireNonNull(e.getMessage()));
+            Log.e("Create_Rtn_Err", Objects.requireNonNull(e.getMessage()));
         }
 
         return  rtn;
@@ -182,11 +182,11 @@ public final class Model {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.w("LocInd_Response", "Length : "+response.length());
+                        Log.i("LocInd_Response", "Length : "+response.length());
                         parseLocationIndicator(location, response);
                     }
                 },
-                error -> Log.w("LocInd_Error", "Time : " + error.getNetworkTimeMs()));
+                error -> Log.e("LocInd_Error", "Time : " + error.getNetworkTimeMs()));
 
         SingletonRequestQueue.getInstance(context).addToRequestQueue(jsonArrayRequest);
     }
@@ -203,7 +203,7 @@ public final class Model {
                 loc_map.putIfAbsent(location, createLocationIndicatorFromJSON(jsonObject));
             }
         } catch (JSONException e) {
-            Log.w("JSON_Loc_Ind_Err", Objects.requireNonNull(e.getMessage()));
+            Log.e("JSON_Loc_Ind_Err", Objects.requireNonNull(e.getMessage()));
         }
     }
 
@@ -229,7 +229,7 @@ public final class Model {
             loc.setIATACode(jsonObject.getString("IATA_Code"));
             loc.setCtryCode(jsonObject.getString("ctry_code"));
         } catch (JSONException e) {
-            Log.w("Create_Loc_Ind_Err", Objects.requireNonNull(e.getMessage()));
+            Log.e("Create_Loc_Ind_Err", Objects.requireNonNull(e.getMessage()));
         }
 
         return loc;
@@ -252,9 +252,9 @@ public final class Model {
             String json = new String(buffer, StandardCharsets.UTF_8);
             jsonArray = new JSONArray(json);
         } catch (FileNotFoundException e) {
-            Log.w("JSON_Not_Found", Objects.requireNonNull(e.getMessage()));
+            Log.e("JSON_Not_Found", Objects.requireNonNull(e.getMessage()));
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("loadJSON_Exc", Objects.requireNonNull(e.getMessage()));
         }
 
         return jsonArray;

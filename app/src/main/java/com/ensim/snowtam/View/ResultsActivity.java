@@ -5,14 +5,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.ProgressBar;
 
 import com.ensim.snowtam.Controller.Controller;
-import com.ensim.snowtam.View.fragment.GMaps_Fragment;
+import com.ensim.snowtam.Model.RealtimeNotam;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.tabs.TabLayout;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,8 +28,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class ResultsActivity extends AppCompatActivity {
-
-    private GMaps_Fragment gMaps_fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +53,8 @@ public class ResultsActivity extends AppCompatActivity {
         // Sets all to uppercase
         airfields.replaceAll(String::toUpperCase);
 
-        controller.sendRealtimeNotamRequest(airfields);
         // Sends the request first
+        //controller.sendRealtimeNotamRequest(airfields);
 
         // Creates a progressDialog to make the user wait
         ProgressDialog progressDialog = new ProgressDialog(this);
@@ -62,7 +63,6 @@ public class ResultsActivity extends AppCompatActivity {
         progressDialog.setIndeterminate(true);
         progressDialog.setProgress(0);
         progressDialog.show();
-      
 
         // Handler to create a loading screen and wait for the request to be fully done
         Handler handler = new Handler();
@@ -74,7 +74,8 @@ public class ResultsActivity extends AppCompatActivity {
 
                 /* Tabbed Activity */
                 // Sections
-                SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), airfields, controller.getRealtimeNotams(airfields));
+                List<RealtimeNotam> rtn = controller.getLocalRealtimeNotams(airfields);
+                SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), airfields, rtn);
 
                 // Pager view
                 ViewPager viewPager = findViewById(R.id.view_pager);
@@ -83,12 +84,21 @@ public class ResultsActivity extends AppCompatActivity {
                 // Tab Layout
                 TabLayout tabs = findViewById(R.id.tabs);
                 tabs.setupWithViewPager(viewPager);
-                
-                // G_Map
-                FragmentManager fragmentManager = this.getSupportFragmentManager();
-                this.gMaps_fragment = (GMaps_Fragment) fragmentManager.findFragmentById(R.id.map);
-                
-                
+
+                // MapView
+                MapView mapView = findViewById(R.id.mapView);
+                mapView.onCreate(savedInstanceState);
+                mapView.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        LatLng lemans = new LatLng(48, 0.20);
+                        googleMap.addMarker(new MarkerOptions().position(lemans).title("Marker in Le Mans"));
+
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lemans, 12));
+                    }
+                });
+                mapView.onResume();
+
                 progressDialog.dismiss();
             }
         }, 3000);

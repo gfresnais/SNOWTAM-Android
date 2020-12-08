@@ -23,10 +23,6 @@ import java.util.List;
  */
 public class ItemFragment extends Fragment {
 
-    private static final String ARG_COLUMN_COUNT = "column-count";
-
-    private int mColumnCount = 1;
-
     private final RealtimeNotam mRtn;
 
     /**
@@ -39,19 +35,13 @@ public class ItemFragment extends Fragment {
     public static ItemFragment newInstance(RealtimeNotam rtn) {
         ItemFragment fragment = new ItemFragment(rtn);
         // Bundle of arguments for fragment creation
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, 1);
-        fragment.setArguments(args);
+        fragment.setArguments(new Bundle());
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
@@ -63,11 +53,8 @@ public class ItemFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
             // Sets the adapter with the Notams list
             recyclerView.setAdapter(new ResultsRecyclerViewAdapter(mRtn, context));
         }
