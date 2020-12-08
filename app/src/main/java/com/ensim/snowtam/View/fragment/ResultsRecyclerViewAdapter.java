@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import com.ensim.snowtam.Model.RealtimeNotam;
 import com.ensim.snowtam.R;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ResultsRecyclerViewAdapter extends RecyclerView.Adapter<ResultsRecyclerViewAdapter.ViewHolder> {
 
-    private final RealtimeNotam mValue;
+    private final List<String> mValue;
     private final Context mContext;
 
     /**
@@ -28,7 +29,7 @@ public class ResultsRecyclerViewAdapter extends RecyclerView.Adapter<ResultsRecy
      * @param item
      * @param context
      */
-    public ResultsRecyclerViewAdapter(RealtimeNotam item, Context context) {
+    public ResultsRecyclerViewAdapter(List<String> item, Context context) {
         mValue = item;
         mContext = context;
     }
@@ -45,8 +46,11 @@ public class ResultsRecyclerViewAdapter extends RecyclerView.Adapter<ResultsRecy
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValue;
         if(holder.mItem != null) {
-            holder.mIdView.setText(mValue.getId());
-            holder.mContentView.setText(mValue.getAll());
+            // Detect first word and use it at
+            String first = mValue.get(position).substring(0, mValue.get(position).indexOf(")") + 1);
+            String str = mValue.get(position).substring(first.length());
+            holder.mIdView.setText(first);
+            holder.mContentView.setText(str);
         } else {
             holder.mContentView.setText(mContext.getString(R.string.no_snowtam));
         }
@@ -58,7 +62,7 @@ public class ResultsRecyclerViewAdapter extends RecyclerView.Adapter<ResultsRecy
      */
     @Override
     public int getItemCount() {
-        return 1;
+        return mValue.size();
     }
 
     /**
@@ -68,7 +72,7 @@ public class ResultsRecyclerViewAdapter extends RecyclerView.Adapter<ResultsRecy
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public RealtimeNotam mItem;
+        public List<String> mItem;
 
         public ViewHolder(View view) {
             super(view);

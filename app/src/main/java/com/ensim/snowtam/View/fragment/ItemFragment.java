@@ -16,6 +16,8 @@ import com.ensim.snowtam.Model.RealtimeNotam;
 import com.ensim.snowtam.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,13 +25,21 @@ import java.util.List;
  */
 public class ItemFragment extends Fragment {
 
-    private final RealtimeNotam mRtn;
+    private final List<String> mRtn;
 
     /**
      * Creates an ItemFragment with an argument
      */
     public ItemFragment(RealtimeNotam rtn) {
-        mRtn = rtn;
+        mRtn = new ArrayList<>();
+        String[] dummy = rtn.getAll().split("\n");
+        for (String s : dummy) {
+            // If it begins with a letter
+            if (s.substring(0, 2).matches("[A-Z]{1}[)]{1}")) {
+                // Adds the line to the List
+                Collections.addAll(mRtn, s.split(" "));
+            } else mRtn.add(s);
+        }
     }
 
     public static ItemFragment newInstance(RealtimeNotam rtn) {
