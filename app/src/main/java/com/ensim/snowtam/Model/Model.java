@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -156,6 +157,54 @@ public final class Model {
         }
 
         return  rtn;
+    }
+
+    /**
+     * Returns a List of FormattedNotams for a given RealtimeNotam
+     * @param rtn
+     * @return
+     */
+    public List<FormattedNotam> getFormattedNotams(RealtimeNotam rtn) {
+        if(rtn == null) return null;
+
+        List<FormattedNotam> formattedNotams = new ArrayList<>();
+
+        // Get the complete Realtime Notam message then split it
+        String[] rtn_all = rtn.getAll().split("\n");
+
+        // Will store the complete list of split messages
+        List<String> rtn_spaces = new ArrayList<>();
+
+        // For each String found, split the spaces if a letter is found
+        for (String s : rtn_all) {
+            if (s.substring(0, 2).matches("[A-Z]{1}[)]{1}")) {
+                Collections.addAll(rtn_spaces, s.split(" "));
+            } else rtn_spaces.add(s);
+        }
+
+        // For each String, add title and content to a new FormattedNotam
+        for (String s : rtn_spaces) {
+            // Instanciate a FormattedNotam which will be added to the List
+            FormattedNotam fn = new FormattedNotam();
+
+            // If it begins with a letter it's a title and the rest is a content
+            if (s.substring(0, 2).matches("[A-Z]{1}[)]{1}")) {
+                // Example of value : A)
+                String title = s.substring(0, s.indexOf(")") + 1);
+                fn.setTitle(title);
+                // The rest of the String is the content, remove the parenthesis
+                fn.setContent( s.substring(title.length()).replace(")","") );
+            } else if( s.startsWith("CREATED") || s.startsWith("SOURCE") ) {
+                String title = s.substring(0, s.indexOf(":"));
+                fn.setTitle(title);
+                fn.setContent( s.substring(title.length() + 1) );
+            }else fn.setContent(s.replace("(","").replace(")",""));
+
+            // Add the FormattedNotam
+            formattedNotams.add(fn);
+        }
+
+        return formattedNotams;
     }
 
 

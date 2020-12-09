@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.ensim.snowtam.Controller.Controller;
+import com.ensim.snowtam.Model.FormattedNotam;
 import com.ensim.snowtam.Model.RealtimeNotam;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -26,6 +27,7 @@ import com.ensim.snowtam.View.ui.main.SectionsPagerAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class ResultsActivity extends AppCompatActivity {
 
@@ -66,41 +68,36 @@ public class ResultsActivity extends AppCompatActivity {
 
         // Handler to create a loading screen and wait for the request to be fully done
         Handler handler = new Handler();
-        // Wait for 3 seconds
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.w("Results_Act_Wait", "Is waiting");
 
-                /* Tabbed Activity */
-                // Sections
-                List<RealtimeNotam> rtn = controller.getLocalRealtimeNotams(airfields);
-                SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), airfields, rtn);
+        handler.postDelayed(() -> {
+            /* Tabbed Activity */
+            // Sections
+            Map<Integer, List<FormattedNotam>> rtn = controller.getLocalFormattedNotams(airfields); // Local
+            SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), airfields, rtn);
 
-                // Pager view
-                ViewPager viewPager = findViewById(R.id.view_pager);
-                viewPager.setAdapter(sectionsPagerAdapter);
+            // Pager view
+            ViewPager viewPager = findViewById(R.id.view_pager);
+            viewPager.setAdapter(sectionsPagerAdapter);
 
-                // Tab Layout
-                TabLayout tabs = findViewById(R.id.tabs);
-                tabs.setupWithViewPager(viewPager);
+            // Tab Layout
+            TabLayout tabs = findViewById(R.id.tabs);
+            tabs.setupWithViewPager(viewPager);
 
-                // MapView
-                MapView mapView = findViewById(R.id.mapView);
-                mapView.onCreate(savedInstanceState);
-                mapView.getMapAsync(new OnMapReadyCallback() {
-                    @Override
-                    public void onMapReady(GoogleMap googleMap) {
-                        LatLng lemans = new LatLng(48, 0.20);
-                        googleMap.addMarker(new MarkerOptions().position(lemans).title("Marker in Le Mans"));
+            // MapView
+            MapView mapView = findViewById(R.id.mapView);
+            mapView.onCreate(savedInstanceState);
+            mapView.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap googleMap) {
+                    LatLng lemans = new LatLng(48, 0.20);
+                    googleMap.addMarker(new MarkerOptions().position(lemans).title("Marker in Le Mans"));
 
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lemans, 12));
-                    }
-                });
-                mapView.onResume();
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lemans, 12));
+                }
+            });
+            mapView.onResume();
 
-                progressDialog.dismiss();
-            }
+            progressDialog.dismiss();
         }, 3000);
     }
 }

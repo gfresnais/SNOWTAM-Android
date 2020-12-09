@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ensim.snowtam.Model.FormattedNotam;
 import com.ensim.snowtam.Model.RealtimeNotam;
 import com.ensim.snowtam.R;
 
@@ -25,24 +26,16 @@ import java.util.List;
  */
 public class ItemFragment extends Fragment {
 
-    private final List<String> mRtn;
+    private final List<FormattedNotam> mRtn;
 
     /**
      * Creates an ItemFragment with an argument
      */
-    public ItemFragment(RealtimeNotam rtn) {
-        mRtn = new ArrayList<>();
-        String[] dummy = rtn.getAll().split("\n");
-        for (String s : dummy) {
-            // If it begins with a letter
-            if (s.substring(0, 2).matches("[A-Z]{1}[)]{1}")) {
-                // Adds the line to the List
-                Collections.addAll(mRtn, s.split(" "));
-            } else mRtn.add(s);
-        }
+    public ItemFragment(List<FormattedNotam> rtn) {
+        mRtn = rtn;
     }
 
-    public static ItemFragment newInstance(RealtimeNotam rtn) {
+    public static ItemFragment newInstance(List<FormattedNotam> rtn) {
         ItemFragment fragment = new ItemFragment(rtn);
         // Bundle of arguments for fragment creation
         fragment.setArguments(new Bundle());
