@@ -24,15 +24,9 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="351dp"
+        android:layout_height="match_parent"
         android:background="@color/primary_ice_blue"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/mapView"
-        android:layout_width="match_parent"
-        android:layout_height="328dp"
-        android:translationY="400dp" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

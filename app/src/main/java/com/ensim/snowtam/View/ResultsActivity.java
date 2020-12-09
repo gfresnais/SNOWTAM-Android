@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.ensim.snowtam.Controller.Controller;
 import com.ensim.snowtam.Model.FormattedNotam;
+import com.ensim.snowtam.Model.LocationIndicator;
 import com.ensim.snowtam.Model.RealtimeNotam;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,6 +26,7 @@ import com.ensim.snowtam.R;
 import com.ensim.snowtam.View.ui.main.SectionsPagerAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +59,7 @@ public class ResultsActivity extends AppCompatActivity {
 
         // Sends the request first
         //controller.sendRealtimeNotamRequest(airfields);
+        controller.sendLocalLocationIndicator(airfields);
 
         // Creates a progressDialog to make the user wait
         ProgressDialog progressDialog = new ProgressDialog(this);
@@ -73,7 +76,8 @@ public class ResultsActivity extends AppCompatActivity {
             /* Tabbed Activity */
             // Sections
             Map<Integer, List<FormattedNotam>> rtn = controller.getLocalFormattedNotams(airfields); // Local
-            SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), airfields, rtn);
+            Map<Integer, LocationIndicator> locationIndicatorMap = controller.getLocationIndicatorMap(airfields);
+            SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), airfields, rtn, locationIndicatorMap);
 
             // Pager view
             ViewPager viewPager = findViewById(R.id.view_pager);
@@ -82,20 +86,6 @@ public class ResultsActivity extends AppCompatActivity {
             // Tab Layout
             TabLayout tabs = findViewById(R.id.tabs);
             tabs.setupWithViewPager(viewPager);
-
-            // MapView
-            MapView mapView = findViewById(R.id.mapView);
-            mapView.onCreate(savedInstanceState);
-            mapView.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap googleMap) {
-                    LatLng lemans = new LatLng(48, 0.20);
-                    googleMap.addMarker(new MarkerOptions().position(lemans).title("Marker in Le Mans"));
-
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lemans, 12));
-                }
-            });
-            mapView.onResume();
 
             progressDialog.dismiss();
         }, 3000);

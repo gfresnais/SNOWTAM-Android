@@ -13,8 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ensim.snowtam.Model.FormattedNotam;
+import com.ensim.snowtam.Model.LocationIndicator;
 import com.ensim.snowtam.Model.RealtimeNotam;
 import com.ensim.snowtam.R;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,16 +34,18 @@ import java.util.List;
 public class ItemFragment extends Fragment {
 
     private final List<FormattedNotam> mRtn;
+    private final LocationIndicator mLoc;
 
     /**
      * Creates an ItemFragment with an argument
      */
-    public ItemFragment(List<FormattedNotam> rtn) {
+    public ItemFragment(List<FormattedNotam> rtn, LocationIndicator loc) {
         mRtn = rtn;
+        mLoc = loc;
     }
 
-    public static ItemFragment newInstance(List<FormattedNotam> rtn) {
-        ItemFragment fragment = new ItemFragment(rtn);
+    public static ItemFragment newInstance(List<FormattedNotam> rtn, LocationIndicator loc) {
+        ItemFragment fragment = new ItemFragment(rtn, loc);
         // Bundle of arguments for fragment creation
         fragment.setArguments(new Bundle());
         return fragment;
@@ -52,15 +61,34 @@ public class ItemFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_results_item_list, container, false);
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-            // Sets the adapter with the Notams list
-            recyclerView.setAdapter(new ResultsRecyclerViewAdapter(mRtn, context));
-        }
+        Context context = view.getContext();
+        RecyclerView recyclerView = view.findViewById(R.id.list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+        // Sets the adapter with the Notams list
+        recyclerView.setAdapter(new ResultsRecyclerViewAdapter(mRtn, context));
+
+
+        // MapView
+        MapView mapView = view.findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(googleMap -> {
+            LatLng latLng = new LatLng(0, 0);
+            String title = getString(R.string.app_name);
+
+            // If there's a LocationIndicator existing
+            if( mLoc != null ) {
+                latLng = mLoc.getLatLng();
+                title = mLoc.getLocationName();
+            }
+
+            googleMap.addMarker( new MarkerOptions().position(latLng).title(title) );
+
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+        });
+        mapView.onResume();
+
         return view;
     }
 }

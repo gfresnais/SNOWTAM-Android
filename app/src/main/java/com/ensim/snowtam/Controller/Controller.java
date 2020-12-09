@@ -8,6 +8,7 @@ import com.ensim.snowtam.Model.FormattedNotam;
 import com.ensim.snowtam.Model.LocationIndicator;
 import com.ensim.snowtam.Model.Model;
 import com.ensim.snowtam.Model.RealtimeNotam;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,11 +19,13 @@ import java.util.Map;
 public class Controller  {
     private final Model model;
 
-    private final Context context;
-
+    /**
+     * Constructor
+     * @param am
+     * @param context
+     */
     public Controller(AssetManager am, Context context) {
         model = new Model(am, context);
-        this.context = context;
     }
 
     /**********************/
@@ -41,30 +44,41 @@ public class Controller  {
     }
 
     /**
-     * Returns a LocationIndicator Object
+     * Sends a request for a local LocationIndicator object
+     * @param airfields
+     * @return
+     */
+    public void sendLocalLocationIndicator(List<String> airfields) {
+        for (String location:
+                airfields) {
+            model.localLocationIndicator(location);
+        }
+    }
+
+    /**
+     * Returns a LocationIndicator object for a given location
      * @param location
      * @return
      */
-    public LocationIndicator getLocationIndicator(String location) {
+    private LocationIndicator getLocationIndicator(String location) {
         return model.getLocationIndicator(location);
     }
 
     /**
-     * Returns the latitude of a given location (ICAO code)
-     * @param location
+     * Returns a Map of LocationIndicator objects from a list of airfields
+     * @param airfields
      * @return
      */
-    public Double getLatitude(String location) {
-        return model.getLocationIndicator(location).getLatitude();
-    }
+    public Map<Integer, LocationIndicator> getLocationIndicatorMap(List<String> airfields) {
+        // Map which will be returned
+        Map<Integer, LocationIndicator> listMap = new HashMap<>();
 
-    /**
-     * Returns the longitude of a given location (ICAO Code)
-     * @param location
-     * @return
-     */
-    public Double getLongitude(String location) {
-        return model.getLocationIndicator(location).getLongitude();
+        for (int i = 0; i < airfields.size(); i++) {
+            // Add the List to the Map
+            listMap.putIfAbsent(i, getLocationIndicator(airfields.get(i)));
+        }
+
+        return listMap;
     }
 
 

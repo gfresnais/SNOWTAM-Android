@@ -1,5 +1,7 @@
 package com.ensim.snowtam.Model;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Object structure of a LocationIndicator
  * Used in JSON files from the ICAO API
@@ -114,6 +116,8 @@ public class LocationIndicator {
     public void setCtryCode(String ctryCode) {
         this.ctryCode = ctryCode;
     }
+
+    public LatLng getLatLng() { return new LatLng(latitude, longitude); }
 
     @Override
     public String toString() {

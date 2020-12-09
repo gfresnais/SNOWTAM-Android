@@ -9,9 +9,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.ensim.snowtam.Model.FormattedNotam;
+import com.ensim.snowtam.Model.LocationIndicator;
 import com.ensim.snowtam.Model.RealtimeNotam;
 import com.ensim.snowtam.R;
 import com.ensim.snowtam.View.fragment.ItemFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,18 +29,21 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     private final List<String> TAB_TITLES;
 
     private final Map<Integer, List<FormattedNotam>> mRtn_list;
+    private final Map<Integer, LocationIndicator> mLocMap;
 
     /**
      * Constructor
      * @param fm
      * @param airfields
      * @param rtn_list
+     * @param locMap
      */
-    public SectionsPagerAdapter(FragmentManager fm, List<String> airfields, Map<Integer, List<FormattedNotam>> rtn_list) {
+    public SectionsPagerAdapter(FragmentManager fm, List<String> airfields, Map<Integer, List<FormattedNotam>> rtn_list, Map<Integer, LocationIndicator> locMap) {
         super(fm);
 
         TAB_TITLES = airfields;
         mRtn_list = rtn_list;
+        mLocMap = locMap;
     }
 
     /**
@@ -50,7 +55,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
-        return ItemFragment.newInstance(mRtn_list.get(position));
+        return ItemFragment.newInstance(mRtn_list.get(position), mLocMap.get(position));
     }
 
     /**

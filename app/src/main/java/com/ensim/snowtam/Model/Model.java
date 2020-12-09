@@ -42,8 +42,8 @@ public final class Model {
     private final AssetManager am;
     private final Context context;
 
-    private Map<String, RealtimeNotam> rtn_map;
-    private Map<String, LocationIndicator> loc_map;
+    private final Map<String, RealtimeNotam> rtn_map;
+    private final Map<String, LocationIndicator> loc_map;
 
     public Model(AssetManager am, Context context) {
         this.am = am;
@@ -279,6 +279,7 @@ public final class Model {
             loc.setCtryCode(jsonObject.getString("ctry_code"));
         } catch (JSONException e) {
             Log.e("Create_Loc_Ind_Err", Objects.requireNonNull(e.getMessage()));
+            return null;
         }
 
         return loc;
