@@ -17,7 +17,7 @@ import com.ensim.snowtam.View.HomePageActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static int SPLASH_SCREEN = 5000; //5 s de splash screen
+    private static int SPLASH_SCREEN = 2500; //2,5 s de splash screen
 
     Animation top_animation;
     ImageView image;
