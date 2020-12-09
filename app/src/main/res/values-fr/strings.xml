@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SNOWTAM</string>
-    <string name="btnSearch">Rechercher</string>
+    <string name="btnSearch">Rechercher 🔎</string>
     <string name="editAirfield">Code Aérodrome (ICAO)</string>
     <string name="title_activity_results">Résultats</string>
     <string name="error_empty_fields">Vous devez rechercher au moins 1 aéroport</string>
