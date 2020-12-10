@@ -7,4 +7,6 @@
     <string name="error_empty_fields">Vous devez rechercher au moins 1 aéroport</string>
     <string name="no_snowtam">Pas de SNOWTAM trouvé</string>
     <string name="loading_results">Récupération des résultats</string>
+    <string name="title_home">Renseignez au moins 1 aérodome (4 lettres)</string>
+    <string name="error_length_fields">4 lettres requises par champ</string>
 </resources>

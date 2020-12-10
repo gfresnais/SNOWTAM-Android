@@ -6,4 +6,6 @@
     <string name="error_empty_fields">You need to search at least 1 airfield</string>
     <string name="no_snowtam">No SNOWTAM found</string>
     <string name="loading_results">Fetching results</string>
+    <string name="title_home">Fill in at least 1 airfield (4 letters)</string>
+    <string name="error_length_fields">4 letters are required for a field</string>
 </resources>

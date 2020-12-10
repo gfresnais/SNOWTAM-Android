@@ -74,7 +74,7 @@ public class ItemFragment extends Fragment {
         MapView mapView = view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(googleMap -> {
-            LatLng latLng = new LatLng(0, 0);
+            LatLng latLng = new LatLng(48, 0.20);
             String title = getString(R.string.app_name);
 
             // If there's a LocationIndicator existing
