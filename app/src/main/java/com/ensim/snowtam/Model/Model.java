@@ -19,10 +19,16 @@ import org.json.JSONObject;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -204,11 +210,32 @@ public final class Model {
      * @param encodedNotams
      * @return
      */
-    public List<FormattedNotam> getDecodedFormattedNotam(List<FormattedNotam> encodedNotams) {
+    public List<FormattedNotam> getDecodedFormattedNotam(List<FormattedNotam> encodedNotams, LocationIndicator locationIndicator) {
         if(encodedNotams == null || encodedNotams.isEmpty()) return null;
 
         List<FormattedNotam> decodedNotams = new ArrayList<>();
 
+        formatEncodedNotams(encodedNotams, decodedNotams);
+
+        for (FormattedNotam fn:
+             decodedNotams) {
+            if( fn.getTitle().matches("[A][)]") ) { fn.setContent(locationIndicator.getLocationName()); }
+            if( fn.getTitle().matches("[B|S][)]") ) {
+                Timestamp ts = new Timestamp(System.currentTimeMillis() - Long.parseLong(fn.getContent()));
+                fn.setContent(((Date) ts).toString());
+            }
+            if( fn.getTitle().matches("[C][)]") ) { fn.setContent( "RUNWAY " + fn.getContent() ); }
+        }
+
+        return decodedNotams;
+    }
+
+    /**
+     * Formats a List of encoded NOTAMS and returns it as a given List
+     * @param encodedNotams
+     * @param decodedNotams
+     */
+    private void formatEncodedNotams(List<FormattedNotam> encodedNotams, List<FormattedNotam> decodedNotams) {
         // The decoded Notam if formatted differently
         for (FormattedNotam enc : encodedNotams) {
             // Instanciate a FormattedNotam which will be added to the List
@@ -229,28 +256,33 @@ public final class Model {
                 for (String s :
                         splitted) {
                     if( s.length() > 1 ) {
+                        // If it's a category, add it as a title and the rest as content
                         if (s.substring(0, 2).matches("[A-Z][)]")) {
                             title = s.substring(0, s.indexOf(")") + 1);
                             content = s.substring(title.length());
                         } else {
-                            title = "";
+                            // Else, it's only content that needs to be added to the current title
                             content = s;
                         }
-                        fn.setTitle(title);
-                        fn.setContent(content);
-                        decodedNotams.add(fn);
+
+                        // If it's not empty, add it to the List
+                        if( !title.isEmpty() && !content.isEmpty() ) {
+                            FormattedNotam fn2 = new FormattedNotam();
+                            fn2.setTitle(title);
+                            fn2.setContent(content.replaceAll("[():]", ""));
+                            decodedNotams.add(fn2);
+                        }
                     }
                 }
             } else {
-                fn.setTitle(title);
-                fn.setContent(content);
+                fn.setTitle(title.replaceAll("[():]", ""));
+                fn.setContent(content.replaceAll("[():]", ""));
             }
 
-            // Add the FormattedNotam
-            decodedNotams.add(fn);
+            // Add the FormattedNotam if it contains content
+            if( fn.getTitle() != null && fn.getContent() != null )
+                decodedNotams.add(fn);
         }
-
-        return decodedNotams;
     }
 
 

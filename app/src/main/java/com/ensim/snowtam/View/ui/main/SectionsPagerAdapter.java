@@ -46,13 +46,13 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         TAB_TITLES = airfields;
         mRtn_list = controller.getFormattedNotams(airfields);
 
+        mLocMap = controller.getLocationIndicatorMap(airfields);
+
         // Creates the Decoded FormattedNotam
         mDecoded = new HashMap<>();
         for (int i = 0; i < mRtn_list.size(); i++) {
-            mDecoded.putIfAbsent(i, controller.getDecodedFormattedNotam(mRtn_list.get(i)));
+            mDecoded.putIfAbsent(i, controller.getDecodedFormattedNotam(mRtn_list.get(i), mLocMap.get(i)));
         }
-
-        mLocMap = controller.getLocationIndicatorMap(airfields);
     }
 
     /**

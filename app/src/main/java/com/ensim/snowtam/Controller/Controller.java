@@ -140,8 +140,8 @@ public class Controller  {
      * @param encodedNotams
      * @return
      */
-    public List<FormattedNotam> getDecodedFormattedNotam(List<FormattedNotam> encodedNotams) {
-        return model.getDecodedFormattedNotam(encodedNotams);
+    public List<FormattedNotam> getDecodedFormattedNotam(List<FormattedNotam> encodedNotams, LocationIndicator locationIndicator) {
+        return model.getDecodedFormattedNotam(encodedNotams, locationIndicator);
     }
 
     /**
