@@ -1,0 +1,16 @@
+[
+  {
+    "Terr_code": "LF",
+    "State_Name": "FRANCE",
+    "ICAO_Code": "UUEE",
+    "AFTN": "",
+    "Location_Name": "Moscow/Sheremetyevo",
+    "Lat": "49:00:3500N",
+    "Long": "002:32:5200E",
+    "Latitude": 55.9725,
+    "Longitude": 37.413056,
+    "codcoun": "LFFranc",
+    "IATA_Code": "CDG",
+    "ctry_code": "FRA"
+  }
+]

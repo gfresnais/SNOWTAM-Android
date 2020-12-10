@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.ensim.snowtam.Controller.Controller;
 import com.ensim.snowtam.Model.FormattedNotam;
 import com.ensim.snowtam.Model.LocationIndicator;
 import com.ensim.snowtam.Model.RealtimeNotam;
@@ -35,15 +36,14 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
      * Constructor
      * @param fm
      * @param airfields
-     * @param rtn_list
-     * @param locMap
+     * @param controller
      */
-    public SectionsPagerAdapter(FragmentManager fm, List<String> airfields, Map<Integer, List<FormattedNotam>> rtn_list, Map<Integer, LocationIndicator> locMap) {
+    public SectionsPagerAdapter(FragmentManager fm, List<String> airfields, Controller controller) {
         super(fm);
 
         TAB_TITLES = airfields;
-        mRtn_list = rtn_list;
-        mLocMap = locMap;
+        mRtn_list = controller.getFormattedNotams(airfields);
+        mLocMap = controller.getLocationIndicatorMap(airfields);
     }
 
     /**

@@ -1,0 +1,16 @@
+[
+  {
+    "Terr_code": "LF",
+    "State_Name": "FRANCE",
+    "ICAO_Code": "ENVA",
+    "AFTN": "",
+    "Location_Name": "Trondheim/Vaernes",
+    "Lat": "49:00:3500N",
+    "Long": "002:32:5200E",
+    "Latitude": 63.4575,
+    "Longitude": 10.924167,
+    "codcoun": "LFFranc",
+    "IATA_Code": "CDG",
+    "ctry_code": "FRA"
+  }
+]

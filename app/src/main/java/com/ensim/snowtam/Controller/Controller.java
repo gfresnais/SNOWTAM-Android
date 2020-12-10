@@ -83,7 +83,7 @@ public class Controller  {
 
 
     /******************/
-    /* REMOTE LOADING */
+    /* REALTIME NOTAM */
     /******************/
 
     /**
@@ -94,6 +94,17 @@ public class Controller  {
         for (String location:
                 airfields) {
             model.requestRealtimeNotam(location);
+        }
+    }
+
+    /**
+     * Orders RealtimeNotam requests from an airfield list (Local loading)
+     * @param airfields
+     */
+    public void sendLocalRealtimeNotamRequest(List<String> airfields) {
+        for (String location:
+                airfields) {
+            model.localRealtimeNotam(location);
         }
     }
 
@@ -111,8 +122,12 @@ public class Controller  {
         return rtn_list;
     }
 
+    /*******************/
+    /* FORMATTED NOTAM */
+    /*******************/
+
     /**
-     * Returns a list of RealtimeNotam from a list of airfields (String)
+     * Returns a list of FormattedNotam from a list of airfields (String)
      * @param airfields
      * @return
      */
@@ -138,35 +153,5 @@ public class Controller  {
         }
 
         return listMap;
-    }
-
-    /*****************/
-    /* LOCAL LOADING */
-    /*****************/
-
-    /**
-     * Returns a list of RealtimeNotam from a list of airfields (String)
-     * Used with a local file, for testing purposes
-     * @param airfields
-     * @return
-     */
-    public List<RealtimeNotam> getLocalRealtimeNotams(List<String> airfields) {
-        List<RealtimeNotam> rtn_list = new ArrayList<>();
-        for (String location:
-                airfields) {
-            model.localRealtimeNotam(location);
-            rtn_list.add(model.getRealtimeNotam(location));
-        }
-        return rtn_list;
-    }
-
-    /**
-     * Returns a list of RealtimeNotam from a list of airfields (String)
-     * Used with a local file, for testing purposes
-     * @param airfields
-     * @return
-     */
-    public Map<Integer, List<FormattedNotam>> getLocalFormattedNotams(List<String> airfields) {
-        return createMapFormattedNotams( getLocalRealtimeNotams(airfields) );
     }
 }

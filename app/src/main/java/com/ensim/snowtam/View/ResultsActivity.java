@@ -57,8 +57,8 @@ public class ResultsActivity extends AppCompatActivity {
         // Sets all to uppercase
         airfields.replaceAll(String::toUpperCase);
 
-        // Sends the request first
-        //controller.sendRealtimeNotamRequest(airfields);
+        // Sends the request first (Local for test purposes)
+        controller.sendLocalRealtimeNotamRequest(airfields);
         controller.sendLocalLocationIndicator(airfields);
 
         // Creates a progressDialog to make the user wait
@@ -75,9 +75,7 @@ public class ResultsActivity extends AppCompatActivity {
         handler.postDelayed(() -> {
             /* Tabbed Activity */
             // Sections
-            Map<Integer, List<FormattedNotam>> rtn = controller.getLocalFormattedNotams(airfields); // Local
-            Map<Integer, LocationIndicator> locationIndicatorMap = controller.getLocationIndicatorMap(airfields);
-            SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), airfields, rtn, locationIndicatorMap);
+            SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), airfields, controller);
 
             // Pager view
             ViewPager viewPager = findViewById(R.id.view_pager);
@@ -88,6 +86,6 @@ public class ResultsActivity extends AppCompatActivity {
             tabs.setupWithViewPager(viewPager);
 
             progressDialog.dismiss();
-        }, 3000);
+        }, 1000);
     }
 }

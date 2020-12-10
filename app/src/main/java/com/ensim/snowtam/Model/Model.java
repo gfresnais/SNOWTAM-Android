@@ -176,32 +176,34 @@ public final class Model {
         List<String> rtn_spaces = new ArrayList<>();
 
         // For each String found, split the spaces if a letter is found
-        for (String s : rtn_all) {
-            if (s.substring(0, 2).matches("[A-Z]{1}[)]{1}")) {
+        /*for (String s : rtn_all) {
+            if (s.substring(0, 2).matches("[A-Z][)]")) {
                 Collections.addAll(rtn_spaces, s.split(" "));
             } else rtn_spaces.add(s);
-        }
+        }*/
 
         // For each String, add title and content to a new FormattedNotam
-        for (String s : rtn_spaces) {
-            // Instanciate a FormattedNotam which will be added to the List
-            FormattedNotam fn = new FormattedNotam();
+        for (String s : rtn_all) {
+            if(s.length() > 0) {
+                // Instanciate a FormattedNotam which will be added to the List
+                FormattedNotam fn = new FormattedNotam();
 
-            // If it begins with a letter it's a title and the rest is a content
-            if (s.substring(0, 2).matches("[A-Z]{1}[)]{1}")) {
-                // Example of value : A)
-                String title = s.substring(0, s.indexOf(")") + 1);
-                fn.setTitle(title);
-                // The rest of the String is the content, remove the parenthesis
-                fn.setContent( s.substring(title.length()).replace(")","") );
-            } else if( s.startsWith("CREATED") || s.startsWith("SOURCE") ) {
-                String title = s.substring(0, s.indexOf(":"));
-                fn.setTitle(title);
-                fn.setContent( s.substring(title.length() + 1) );
-            }else fn.setContent(s.replace("(","").replace(")",""));
+                // If it begins with a letter it's a title and the rest is a content
+                if (s.substring(0, 2).matches("[A-Z][)]")) {
+                    // Example of value : A)
+                    String title = s.substring(0, s.indexOf(")") + 1);
+                    fn.setTitle(title);
+                    // The rest of the String is the content, remove the parenthesis
+                    fn.setContent( s.substring(title.length()) );
+                } else if( s.startsWith("CREATED") || s.startsWith("SOURCE") ) {
+                    String title = s.substring(0, s.indexOf(":"));
+                    fn.setTitle(title);
+                    fn.setContent( s.substring(title.length() + 1) );
+                }else fn.setContent(s);
 
-            // Add the FormattedNotam
-            formattedNotams.add(fn);
+                // Add the FormattedNotam
+                formattedNotams.add(fn);
+            }
         }
 
         return formattedNotams;
@@ -217,7 +219,7 @@ public final class Model {
      * @param location
      */
     public void localLocationIndicator(String location) {
-        JSONArray jsonArray = loadJSONFromAsset(location + ".json");
+        JSONArray jsonArray = loadJSONFromAsset(location + "_loc.json");
         parseLocationIndicator(location, jsonArray);
     }
 

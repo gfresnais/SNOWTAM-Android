@@ -46,8 +46,6 @@ public class ItemFragment extends Fragment {
 
     public static ItemFragment newInstance(List<FormattedNotam> rtn, LocationIndicator loc) {
         ItemFragment fragment = new ItemFragment(rtn, loc);
-        // Bundle of arguments for fragment creation
-        fragment.setArguments(new Bundle());
         return fragment;
     }
 

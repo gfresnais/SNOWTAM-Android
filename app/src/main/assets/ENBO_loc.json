@@ -1,0 +1,16 @@
+[
+  {
+    "Terr_code": "LF",
+    "State_Name": "FRANCE",
+    "ICAO_Code": "ENBO",
+    "AFTN": "",
+    "Location_Name": "Bodoe",
+    "Lat": "49:00:3500N",
+    "Long": "002:32:5200E",
+    "Latitude": 67.269167,
+    "Longitude": 14.365278,
+    "codcoun": "LFFranc",
+    "IATA_Code": "CDG",
+    "ctry_code": "FRA"
+  }
+]
