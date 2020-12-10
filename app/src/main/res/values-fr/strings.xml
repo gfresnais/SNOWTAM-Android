@@ -9,6 +9,7 @@
     <string name="loading_results">Récupération des résultats</string>
     <string name="title_home">Renseignez au moins 1 aérodome \n (4 lettres)</string>
     <string name="error_length_fields">4 lettres requises par champ</string>
-    <string name="btnEncode">Encoder</string>
-    <string name="btnDecode">Décoder</string>
+    <string name="click_encode">Encoder</string>
+    <string name="click_decode">Décoder</string>
+    <string name="error_decode">Erreur de décodage du SNOWTAM</string>
 </resources>

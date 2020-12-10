@@ -44,9 +44,8 @@ public class ResultsRecyclerViewAdapter extends RecyclerView.Adapter<ResultsRecy
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValue;
-        if(holder.mItem != null) {
+    public void onBindViewHolder(@NotNull final ViewHolder holder, int position) {
+        if(mValue != null && mValue.get(position) != null) {
             holder.mIdView.setText(mValue.get(position).getTitle());
             holder.mContentView.setText(mValue.get(position).getContent());
         } else {

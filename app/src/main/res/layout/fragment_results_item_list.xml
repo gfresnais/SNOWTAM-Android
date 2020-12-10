@@ -13,7 +13,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="300dp"
+        android:fadeScrollbars="false"
         android:scrollbars="vertical"
         tools:listitem="@layout/fragment_results_item">
 
@@ -23,13 +24,14 @@
         android:id="@+id/btnDecode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/btnDecode"
         android:background="@drawable/button_shape"
+        android:text="@string/click_decode"
         android:textAlignment="center" />
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="300dp" />
+        android:layout_height="wrap_content"
+        app:liteMode="true"/>
 
 </LinearLayout>

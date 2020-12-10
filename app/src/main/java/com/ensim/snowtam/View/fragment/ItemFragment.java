@@ -4,11 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,18 +15,13 @@ import android.widget.Toast;
 
 import com.ensim.snowtam.Model.FormattedNotam;
 import com.ensim.snowtam.Model.LocationIndicator;
-import com.ensim.snowtam.Model.RealtimeNotam;
 import com.ensim.snowtam.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -39,7 +32,7 @@ public class ItemFragment extends Fragment {
     private final List<FormattedNotam> mRtn;
     private final LocationIndicator mLoc;
     private final List<FormattedNotam> mDec;
-    private List<FormattedNotam> mRecList;
+    private List<FormattedNotam> mRecList = null;
 
     private ResultsRecyclerViewAdapter adapter;
     private Button btnDecode;
@@ -53,7 +46,10 @@ public class ItemFragment extends Fragment {
         mRtn = rtn;
         mLoc = loc;
         mDec = dec;
-        mRecList = new ArrayList<>(mRtn);
+        if( mRtn != null ) {
+            mRecList = new ArrayList<>();
+            mRecList.addAll(mRtn);
+        }
     }
 
     public static ItemFragment newInstance(List<FormattedNotam> rtn, LocationIndicator loc, List<FormattedNotam> dec) {
@@ -112,16 +108,19 @@ public class ItemFragment extends Fragment {
      * @param v
      */
     public void onClickDecode(View v) {
-        Log.i("ItemFragment", "Decode");
-        mRecList.clear();
-        if( !isDecoded ) {
-            mRecList.addAll(mDec);
-            btnDecode.setText(getString(R.string.btnEncode));
-        } else {
-            mRecList.addAll(mRtn);
-            btnDecode.setText(getString(R.string.btnDecode));
-        }
-        isDecoded = !isDecoded;
-        adapter.notifyDataSetChanged();
+        if( mRecList != null ) {
+            mRecList.clear();
+
+            if( !isDecoded ) {
+                mRecList.addAll(mDec);
+                btnDecode.setText(getString(R.string.click_encode));
+            } else {
+                mRecList.addAll(mRtn);
+                btnDecode.setText(getString(R.string.click_decode));
+            }
+            isDecoded = !isDecoded;
+
+            adapter.notifyDataSetChanged();
+        } else Toast.makeText(getContext(), getString(R.string.error_decode), Toast.LENGTH_LONG).show();
     }
 }
