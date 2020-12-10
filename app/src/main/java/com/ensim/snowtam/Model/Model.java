@@ -172,34 +172,24 @@ public final class Model {
         // Get the complete Realtime Notam message then split it
         String[] rtn_all = rtn.getAll().split("\n");
 
-        // Will store the complete list of split messages
-        List<String> rtn_spaces = new ArrayList<>();
-
-        // For each String found, split the spaces if a letter is found
-        /*for (String s : rtn_all) {
-            if (s.substring(0, 2).matches("[A-Z][)]")) {
-                Collections.addAll(rtn_spaces, s.split(" "));
-            } else rtn_spaces.add(s);
-        }*/
-
         // For each String, add title and content to a new FormattedNotam
         for (String s : rtn_all) {
             if(s.length() > 0) {
                 // Instanciate a FormattedNotam which will be added to the List
                 FormattedNotam fn = new FormattedNotam();
 
+                String title = "";
                 // If it begins with a letter it's a title and the rest is a content
                 if (s.substring(0, 2).matches("[A-Z][)]")) {
                     // Example of value : A)
-                    String title = s.substring(0, s.indexOf(")") + 1);
-                    fn.setTitle(title);
-                    // The rest of the String is the content, remove the parenthesis
-                    fn.setContent( s.substring(title.length()) );
+                    title = s.substring(0, s.indexOf(")") + 1);
                 } else if( s.startsWith("CREATED") || s.startsWith("SOURCE") ) {
-                    String title = s.substring(0, s.indexOf(":"));
-                    fn.setTitle(title);
-                    fn.setContent( s.substring(title.length() + 1) );
-                }else fn.setContent(s);
+                    title = s.substring(0, s.indexOf(":") + 1);
+                }
+
+                fn.setTitle(title);
+                // The rest of the String is the content, remove the parenthesis
+                fn.setContent( s.substring(title.length()) );
 
                 // Add the FormattedNotam
                 formattedNotams.add(fn);
@@ -207,6 +197,60 @@ public final class Model {
         }
 
         return formattedNotams;
+    }
+
+    /**
+     * Creates a List of FormattedNotam which is decoded
+     * @param encodedNotams
+     * @return
+     */
+    public List<FormattedNotam> getDecodedFormattedNotam(List<FormattedNotam> encodedNotams) {
+        if(encodedNotams == null || encodedNotams.isEmpty()) return null;
+
+        List<FormattedNotam> decodedNotams = new ArrayList<>();
+
+        // The decoded Notam if formatted differently
+        for (FormattedNotam enc : encodedNotams) {
+            // Instanciate a FormattedNotam which will be added to the List
+            FormattedNotam fn = new FormattedNotam();
+
+            String title = enc.getTitle();
+            String content = enc.getContent();
+
+            String[] splitted = null;
+            // If it's a category (example "A)")
+            if (enc.getTitle().matches("[A-Z][)]")) {
+                // Split the white spaces
+                splitted = enc.getContent().split(" ");
+            }
+
+            // If there's splitted content
+            if( splitted != null ) {
+                for (String s :
+                        splitted) {
+                    if( s.length() > 1 ) {
+                        if (s.substring(0, 2).matches("[A-Z][)]")) {
+                            title = s.substring(0, s.indexOf(")") + 1);
+                            content = s.substring(title.length());
+                        } else {
+                            title = "";
+                            content = s;
+                        }
+                        fn.setTitle(title);
+                        fn.setContent(content);
+                        decodedNotams.add(fn);
+                    }
+                }
+            } else {
+                fn.setTitle(title);
+                fn.setContent(content);
+            }
+
+            // Add the FormattedNotam
+            decodedNotams.add(fn);
+        }
+
+        return decodedNotams;
     }
 
 

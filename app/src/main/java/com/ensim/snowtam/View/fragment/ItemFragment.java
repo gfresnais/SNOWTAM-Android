@@ -8,9 +8,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.ensim.snowtam.Model.FormattedNotam;
 import com.ensim.snowtam.Model.LocationIndicator;
@@ -35,18 +38,26 @@ public class ItemFragment extends Fragment {
 
     private final List<FormattedNotam> mRtn;
     private final LocationIndicator mLoc;
+    private final List<FormattedNotam> mDec;
+    private List<FormattedNotam> mRecList;
+
+    private ResultsRecyclerViewAdapter adapter;
+    private Button btnDecode;
+
+    private boolean isDecoded = false;
 
     /**
      * Creates an ItemFragment with an argument
      */
-    public ItemFragment(List<FormattedNotam> rtn, LocationIndicator loc) {
+    public ItemFragment(List<FormattedNotam> rtn, LocationIndicator loc, List<FormattedNotam> dec) {
         mRtn = rtn;
         mLoc = loc;
+        mDec = dec;
+        mRecList = new ArrayList<>(mRtn);
     }
 
-    public static ItemFragment newInstance(List<FormattedNotam> rtn, LocationIndicator loc) {
-        ItemFragment fragment = new ItemFragment(rtn, loc);
-        return fragment;
+    public static ItemFragment newInstance(List<FormattedNotam> rtn, LocationIndicator loc, List<FormattedNotam> dec) {
+        return new ItemFragment(rtn, loc, dec);
     }
 
     @Override
@@ -64,8 +75,14 @@ public class ItemFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
+        adapter = new ResultsRecyclerViewAdapter(mRecList, context);
+
         // Sets the adapter with the Notams list
-        recyclerView.setAdapter(new ResultsRecyclerViewAdapter(mRtn, context));
+        recyclerView.setAdapter(adapter);
+
+        // Button Decode
+        btnDecode =  view.findViewById(R.id.btnDecode);
+        btnDecode.setOnClickListener(this::onClickDecode);
 
 
         // MapView
@@ -88,5 +105,23 @@ public class ItemFragment extends Fragment {
         mapView.onResume();
 
         return view;
+    }
+
+    /**
+     * Change the data used by the RecyclerView
+     * @param v
+     */
+    public void onClickDecode(View v) {
+        Log.i("ItemFragment", "Decode");
+        mRecList.clear();
+        if( !isDecoded ) {
+            mRecList.addAll(mDec);
+            btnDecode.setText(getString(R.string.btnEncode));
+        } else {
+            mRecList.addAll(mRtn);
+            btnDecode.setText(getString(R.string.btnDecode));
+        }
+        isDecoded = !isDecoded;
+        adapter.notifyDataSetChanged();
     }
 }

@@ -8,4 +8,6 @@
     <string name="loading_results">Fetching results</string>
     <string name="title_home">Fill in at least 1 airfield \n (4 letters)</string>
     <string name="error_length_fields">4 letters are required for a field</string>
+    <string name="btnEncode">Encode</string>
+    <string name="btnDecode">Decode</string>
 </resources>

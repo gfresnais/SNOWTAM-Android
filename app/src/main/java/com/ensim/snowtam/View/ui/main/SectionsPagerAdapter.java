@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     private final List<String> TAB_TITLES;
 
     private final Map<Integer, List<FormattedNotam>> mRtn_list;
+    private final Map<Integer, List<FormattedNotam>> mDecoded;
     private final Map<Integer, LocationIndicator> mLocMap;
 
     /**
@@ -43,6 +45,13 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         TAB_TITLES = airfields;
         mRtn_list = controller.getFormattedNotams(airfields);
+
+        // Creates the Decoded FormattedNotam
+        mDecoded = new HashMap<>();
+        for (int i = 0; i < mRtn_list.size(); i++) {
+            mDecoded.putIfAbsent(i, controller.getDecodedFormattedNotam(mRtn_list.get(i)));
+        }
+
         mLocMap = controller.getLocationIndicatorMap(airfields);
     }
 
@@ -55,7 +64,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
-        return ItemFragment.newInstance(mRtn_list.get(position), mLocMap.get(position));
+        return ItemFragment.newInstance(mRtn_list.get(position), mLocMap.get(position), mDecoded.get(position));
     }
 
     /**

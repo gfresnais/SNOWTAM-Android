@@ -6,15 +6,25 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
+    android:gravity="center"
     android:orientation="vertical"
     android:scrollbars="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="350dp"
         android:scrollbars="vertical"
-        tools:listitem="@layout/fragment_results_item"></androidx.recyclerview.widget.RecyclerView>
+        tools:listitem="@layout/fragment_results_item">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/btnDecode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btnDecode"
+        android:textAlignment="center" />
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"

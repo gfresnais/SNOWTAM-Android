@@ -18,7 +18,7 @@ import com.ensim.snowtam.R;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * {@link RecyclerView.Adapter} that can display a
+ * {@link RecyclerView.Adapter} that can display a Notam List
  */
 public class ResultsRecyclerViewAdapter extends RecyclerView.Adapter<ResultsRecyclerViewAdapter.ViewHolder> {
 

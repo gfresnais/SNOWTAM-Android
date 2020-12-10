@@ -136,6 +136,15 @@ public class Controller  {
     }
 
     /**
+     * Returns a List of decoded notams (FormattedNotam) from a List of FormattedNotam
+     * @param encodedNotams
+     * @return
+     */
+    public List<FormattedNotam> getDecodedFormattedNotam(List<FormattedNotam> encodedNotams) {
+        return model.getDecodedFormattedNotam(encodedNotams);
+    }
+
+    /**
      * Creates a Map of FormattedNotams Lists
      * @param rtn_list
      * @return
