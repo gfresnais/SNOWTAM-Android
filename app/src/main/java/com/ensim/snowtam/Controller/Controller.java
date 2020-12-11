@@ -48,7 +48,7 @@ public class Controller  {
      * @param airfields
      * @return
      */
-    public void sendLocalLocationIndicator(List<String> airfields) {
+    public void sendLocalLocationIndicatorRequest(List<String> airfields) {
         for (String location:
                 airfields) {
             model.localLocationIndicator(location);

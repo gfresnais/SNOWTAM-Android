@@ -33,6 +33,14 @@ import java.util.Map;
 
 public class ResultsActivity extends AppCompatActivity {
 
+    // Used to set the local or remote loading
+    // true = local loading
+    // false = remote loading (API)
+    private boolean local = true;
+
+    // Used for demo purposes
+    private int time = 5000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +66,14 @@ public class ResultsActivity extends AppCompatActivity {
         airfields.replaceAll(String::toUpperCase);
 
         // Sends the request first (Local for test purposes)
-        controller.sendLocalRealtimeNotamRequest(airfields);
-        controller.sendLocalLocationIndicator(airfields);
+        if( local ) {
+            time = 1000;
+            controller.sendLocalRealtimeNotamRequest(airfields);
+            controller.sendLocalLocationIndicatorRequest(airfields);
+        } else {
+            controller.sendRealtimeNotamRequest(airfields);
+            controller.sendLocationIndicatorRequest(airfields);
+        }
 
         // Creates a progressDialog to make the user wait
         ProgressDialog progressDialog = new ProgressDialog(this);
@@ -86,6 +100,6 @@ public class ResultsActivity extends AppCompatActivity {
             tabs.setupWithViewPager(viewPager);
 
             progressDialog.dismiss();
-        }, 1000);
+        }, time);
     }
 }
